@@ -1,0 +1,58 @@
+{% extends "admin_templates/admin_base_layout.html" %}    
+
+{% block head_part %}
+{% endblock head_part %}
+
+{% block body %}
+    
+
+        <div class="text-center mb-4">
+            <h1>{{request.endpoint.replace('_', ' ') | upper}}</h1>
+        </div>
+
+        <div class="container mt-4">
+            <h2>Order Transaction List</h2>
+
+            <div class="row">
+                
+                {% for item in order_transaction_list %}
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ item.name }}</h5>
+                                <p class="card-text">
+                                    <strong>Address:</strong> {{ item.address }}<br>
+                                    <strong>Contact No:</strong> {{ item.contact_no }}<br>
+                                    <strong>Email:</strong> {{ item.email }}<br>
+                                    <strong>Password:</strong> {{ item.password }}<br>
+                                    <strong>Role:</strong> {{ item.role }}<br>
+                                    <strong>Created At:</strong> {{ item.created_at }}<br>
+                                    <strong>Updated At:</strong> {{ item.updated_at }}<br>
+                                    {# <strong>Deleted:</strong> {{ item.is_deleted }}#}
+                                </p>
+                               <div class="btn-group">
+                                    <!-- View and Edit Links -->
+                                    <a href="/order_transaction_view/{{ item.id }}" class="btn btn-info">View Details</a>
+                                    {#   <a href="/order_transaction_view/edit/{{ item.id }}" class="btn btn-warning">Edit</a>
+
+                                    <!-- Delete Form -->
+                                       <form method="post" action="/order_transaction_view/delete/{{ item.id }}" class="d-inline">
+                                        <input type="hidden" name="record_id" value="{{ item.id }}">
+                                        <button type="submit" name="btn_delete" class="btn btn-danger">Delete</button>
+                                    </form>#}
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-12">
+                        <div class="alert alert-warning" role="alert">
+                            No oder found.
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    
+{% endblock body %}

@@ -1,0 +1,116 @@
+{% extends "admin_templates/admin_base_layout.html" %}
+
+{% block head_part %}
+    <title>Manage User</title>
+{% endblock head_part %}
+
+{% block body %}
+    <div class="main p-3">
+        <div class="text-center mb-4">
+            <h1>{{ session['super_admin_user_id'] }} - Manage User</h1>
+        </div>
+
+        <div class="container mt-4">
+            <h2>
+                {% if action == "edit" %}
+                    Edit User
+                {% elif action == "create" %}
+                    Create User
+                {% else %}
+                    View User
+                {% endif %}
+            </h2>
+
+            <!-- Form for Create, Edit, View -->
+            <form method="POST" 
+                  action="{{ url_for('user_alter', action=action, id=user.id if user else None) }}">
+                
+                <!-- Name -->
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" 
+                           {{field_disable}} value="{{ user.name if user else '' }}" required>
+                </div>
+
+                <!-- Address -->
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" class="form-control" id="address" name="address" 
+                           {{field_disable}} value="{{ user.address if user else '' }}" required>
+                </div>
+
+                <!-- Contact Number -->
+                <div class="form-group">
+                    <label for="contact_no">Contact No</label>
+                    <input type="text" class="form-control" id="contact_no" name="contact_no" 
+                           {{field_disable}} value="{{ user.contact_no if user else '' }}" required>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" 
+                           {{field_disable}} value="{{ user.email if user else '' }}" required>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" 
+                           {{field_disable}} value="{{ user.password if user else '' }}" required>
+                </div>
+
+                <!-- Role -->
+                <div class="form-group">
+                    <label for="role">Role</label>
+                
+                    {% if action == 'edit' or action == 'create' %}
+                        <select class="form-control" id="role" name="role" required>
+                            <option value="">Select</option>
+                            <option value="Customer" {% if action == 'edit' and user.role == "Customer" %}selected{% endif %}>Customer</option>
+                            {# <option value="Admin">Admin</option>#} <!-- Uncomment if you want to include Admin role -->
+                        </select>
+                    {% else %}
+                        <input type="text" class="form-control" id="role" name="role" {{field_disable}} value="{{ user.role if user else '' }}" required>
+                    {% endif %}
+                </div>
+                
+                
+
+                <!-- Created At (Only for Edit, View) -->
+                {% if user %}
+                    <div class="form-group">
+                        <label for="created_at">Created At</label>
+                        <input type="text" class="form-control" id="created_at" name="created_at" 
+                               value="{{ user.created_at }}" disabled>
+                    </div>
+                {% endif %}
+
+                <!-- Updated At (Only for Edit, View) -->
+                {% if user %}
+                    <div class="form-group">
+                        <label for="updated_at">Updated At</label>
+                        <input type="text" class="form-control" id="updated_at" name="updated_at" 
+                               value="{{ user.updated_at }}" disabled>
+                    </div>
+                {% endif %}
+
+                <!-- Submit Button (Edit / Create) -->
+                {% if action == "edit" %}
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                {% elif action == "create" %}
+                    <button type="submit" class="btn btn-primary">Create User</button>
+                {% endif %}
+
+                <!-- Cancel / Back Button -->
+                <a href="{{ url_for('user_list') }}" class="btn btn-secondary">
+                    {% if action == "edit" %}
+                        Cancel
+                    {% else %}
+                        Back
+                    {% endif %}
+                </a>
+            </form>
+        </div>
+    </div>
+{% endblock body %}

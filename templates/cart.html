@@ -1,0 +1,215 @@
+{% extends "base_layout.html" %}
+
+{% block title %}Cart{% endblock title %}
+
+{% block head_part %}
+<style>
+  .cart-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  .cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  .cart-table th, .cart-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  .cart-table th {
+    background-color: #f1f1f1;
+  }
+  .cart-actions button {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .btn-primary {
+    background-color: #007bff;
+    color: white;
+  }
+  .btn-danger {
+    background-color: #dc3545;
+    color: white;
+  }
+  .btn-primary:hover, .btn-danger:hover {
+    opacity: 0.9;
+  }
+  .total-price {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+</style>
+{% endblock head_part %}
+
+{% block body %}
+<main>
+  <div class="cart-container">
+    {% if is_logged_in %}
+      
+
+      {% for item in cart_list %}
+      {% set total_sum = 0 %}
+        <div id="cart-item-{{ item.product_id }}">
+          <p>Product Name: {{ item.product.name }}</p>
+          <p>
+            Quantity: 
+            <button class="btn-primary" onclick="updateQuantity({{ item.product_id }}, -1)">-</button>
+            <span id="quantity-{{ item.product_id }}">{{ item.quantity }}</span>
+            <button class="btn-primary" onclick="updateQuantity({{ item.product_id }}, 1)">+</button>
+          </p>
+          <p>Price: ₹{{ item.product.price }}</p>
+          <p>Total Price: ₹<span id="total-price-{{ item.product_id }}">{{ item.product.price * item.quantity }}</span></p>
+          <button class="btn-danger" onclick="removeCartItem({{ item.product_id }})">Remove</button>
+          <hr>
+        </div>
+        
+        {% set total_sum = total_sum + (item.product.price * item.quantity) %}
+        
+      {% endfor %}
+      
+      <div class="total-price text-align-center">
+        Total: ₹<span id="total-sum">{{ total_amt }}</span> <br>
+        <a href="/checkout" class="btn btn-primary">Checkout</a>
+      </div>
+ 
+      <script>
+        async function updateQuantity(productId, change) {
+          try {
+            const response = await fetch('/update_cart', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ product_id: productId, change: change }),
+            });
+
+            const result = await response.json();
+            if (result.success) {
+              const quantityElement = document.getElementById(`quantity-${productId}`);
+              const newQuantity = result.new_quantity;
+           //   alert('newq'+newQuantity)
+            //  alert('price'+result.price)
+              quantityElement.textContent = newQuantity;
+
+              if (newQuantity <= 0) {
+                document.getElementById(`cart-item-${productId}`).remove();
+              } else {
+                document.getElementById(`total-price-${productId}`).textContent = (newQuantity * result.price).toFixed(2);
+              }
+
+              updateTotalPrice();
+            } else {
+              alert(result.error || 'Failed to update quantity');
+            }
+          } catch (error) {
+            console.error('Error updating quantity:', error);
+            alert('An error occurred while updating the cart');
+          }
+        }
+
+        async function removeCartItem(productId) {
+          await updateQuantity(productId, 'delete');
+        }
+
+        function updateTotalPrice() {
+          let total = 0;
+          document.querySelectorAll('[id^="total-price-"]').forEach(priceElement => {
+            total += parseFloat(priceElement.textContent);
+          });
+          document.getElementById('total-sum').textContent = total.toFixed(2);
+        }
+      </script>
+    {% else %}
+      <div id="cart-items"></div>
+      <div class="total-price">
+        Total: ₹<span id="total-price">0.00</span>
+      </div>
+
+      <script>
+        function addToCart(productId, price, name) {
+          let cart = JSON.parse(localStorage.getItem('cart')) || [];
+          const existingProduct = cart.find(item => item.product_id === productId);
+
+          if (existingProduct) {
+            existingProduct.quantity += 1;
+          } else {
+            cart.push({ product_id: productId, name: name, quantity: 1, price: price });
+          }
+
+          localStorage.setItem('cart', JSON.stringify(cart));
+          alert("Product added to cart!");
+          listCartItems();
+        }
+
+        function listCartItems() {
+          const cartItemsDiv = document.getElementById('cart-items');
+          cartItemsDiv.innerHTML = '';
+          const cartData = JSON.parse(localStorage.getItem('cart')) || [];
+
+          if (cartData.length === 0) {
+            cartItemsDiv.innerHTML = '<p>Your cart is empty.</p>';
+            document.getElementById('total-price').textContent = '0.00';
+            return;
+          }
+
+          let total = 0;
+          cartData.forEach((item, index) => {
+            const totalPrice = (item.quantity * item.price).toFixed(2);
+            total += parseFloat(totalPrice);
+
+            const itemDiv = document.createElement('div');
+            itemDiv.innerHTML = `
+              <p>Product Name: ${item.name}</p>
+              <p>
+                Quantity: 
+                <button class="btn-primary" onclick="updateQuantity(${index}, -1)">-</button>
+                ${item.quantity}
+                <button class="btn-primary" onclick="updateQuantity(${index}, 1)">+</button>
+              </p>
+              <p>Price: ₹${item.price}</p>
+              <p>Total Price: ₹${totalPrice}</p>
+              <button class="btn-danger" onclick="removeCartItem(${index})">Remove</button>
+              <hr>
+            `;
+            cartItemsDiv.appendChild(itemDiv);
+          });
+
+          document.getElementById('total-price').textContent = total.toFixed(2);
+        }
+
+        function updateQuantity(index, change) {
+          let cartData = JSON.parse(localStorage.getItem('cart')) || [];
+
+          if (cartData[index]) {
+            cartData[index].quantity += change;
+            if (cartData[index].quantity <= 0) {
+              cartData.splice(index, 1);
+            }
+            localStorage.setItem('cart', JSON.stringify(cartData));
+            listCartItems();
+          }
+        }
+
+        function removeCartItem(index) {
+          let cartData = JSON.parse(localStorage.getItem('cart')) || [];
+          cartData.splice(index, 1);
+          localStorage.setItem('cart', JSON.stringify(cartData));
+          listCartItems();
+        }
+
+        listCartItems();
+      </script>
+    {% endif %}
+  </div>
+</main>
+{% endblock body %}

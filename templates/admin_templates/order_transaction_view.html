@@ -1,0 +1,79 @@
+{% extends "base_layout.html" %}
+
+{% block title %}Bill Details{% endblock title %}
+
+{% block head_part %}
+ 
+  <style>
+    .bill-header {
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 5px;
+      margin-bottom: 30px;
+    }
+    .order-item {
+      padding: 15px;
+      border-bottom: 1px solid #e3e3e3;
+    }
+    .total-section {
+      font-weight: bold;
+      font-size: 1.25rem;
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    .btn-back {
+      margin-top: 20px;
+    }
+  </style>
+{% endblock head_part %}
+
+{% block body %}
+  <main class="container mt-5">
+    <div class="bill-header">
+      <h2 class="text-center">Bill Details</h2>
+      <p class="text-center text-muted">Transaction ID: <strong>{{ bill_dtl.trasaction_no }}</strong></p>
+      <p class="text-center text-muted">Bill No: <strong>{{ bill_dtl.bill_no }}</strong></p>
+      <p class="text-center text-muted">Date: <strong>{{ bill_dtl.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</strong></p>
+    </div>
+
+    <div class="order-items-list">
+      <h4>Ordered Products</h4>
+      <div class="list-group">
+        {% for product in order_products %}
+          <div class="list-group-item order-item">
+            <div class="row">
+              <div class="col-md-6">
+                <h5>{{ product.product.name }}</h5>
+                <p>{{ product.product.description }}</p>
+              </div>
+              <div class="col-md-3 text-center">
+                <strong>{{ product.quantity }}</strong> x ₹{{ product.price }}
+              </div>
+              <div class="col-md-3 text-center">
+                <strong>₹{{ product.quantity * product.price }}</strong>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="total-section">
+      <div class="row">
+        <div class="col-md-9">
+          <h4>Total</h4>
+        </div>
+        <div class="col-md-3 text-right">
+          <h4>₹ {% if bill_dtl.total_pay_amount %}{{ bill_dtl.total_pay_amount }}{% else %} {{tota_amt}} {% endif %}</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center">
+        <a href="javascript:history.back()" class="btn btn-secondary btn-back">Back</a>
+
+    </div>
+  </main>
+{% endblock body %}

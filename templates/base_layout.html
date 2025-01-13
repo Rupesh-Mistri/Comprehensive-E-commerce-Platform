@@ -1,0 +1,23 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {# <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" >#}
+    
+    <!-- Bootstrap CSS -->
+    <link href="{{ url_for('static', filename='css/bootstrap5.3.min.css') }}" rel="stylesheet" > 
+    {% block head_part %}
+    
+    {% endblock head_part %}
+    <title>{% block title %}{{request.endpoint.replace('_', ' ') | upper}}{% endblock title %}</title>
+  </head>
+  <body>
+    {% include "header.html" %}
+    {% block body %}{% endblock body %}
+    {% include "footer.html"%}
+    
+  </body>
+</html>

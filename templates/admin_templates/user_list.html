@@ -1,0 +1,63 @@
+{% extends "admin_templates/admin_base_layout.html" %}    
+
+{% block head_part %}
+    <!-- Optionally include any additional stylesheets or meta tags here -->
+{% endblock head_part %}
+
+{% block body %}
+    <div class="main p-3">
+        <div class="text-center mb-4">
+            <h1>{{ session['super_admin_user_id'] }} Manage Users</h1>
+        </div>
+
+        <div class="container mt-4">
+            <div style="text-align: center;">
+                <h2>User List</h2>
+            </div>
+            <div style="text-align: right;">
+                <a href="/user_alter/create" class="btn btn-primary">Add User</a>
+            </div>
+            <div class="row">
+                <!-- Loop through user_list to create a list of users -->
+                {% for item in user_list %}
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ item.name }}</h5>
+                                <p class="card-text">
+                                    <strong>Address:</strong> {{ item.address }}<br>
+                                    <strong>Contact No:</strong> {{ item.contact_no }}<br>
+                                    <strong>Email:</strong> {{ item.email }}<br>
+                                    <strong>Age:</strong> {{ item.age }}<br>
+                                    <strong>Gender:</strong> {{ item.gender }}<br>
+                                   
+                                    <strong>Role:</strong> {{ item.role }}<br>
+                                    <strong>Created At:</strong> {{ item.created_at }}<br>
+                                    <strong>Updated At:</strong> {{ item.updated_at }}<br>
+                                   {# <strong>Deleted:</strong> {{ item.is_deleted }} #}
+                                </p>
+                                <div class="btn-group">
+                                    <!-- View and Edit Links -->
+                                    <a href="/user_alter/view/{{ item.id }}" class="btn btn-info">View</a>
+                                    <a href="/user_alter/edit/{{ item.id }}" class="btn btn-warning">Edit</a>
+
+                                    <!-- Delete Form -->
+                                    <form method="post" action="/user_alter/delete/{{ item.id }}" class="d-inline">
+                                        <input type="hidden" name="record_id" value="{{ item.id }}">
+                                        <button type="submit" name="btn_delete" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-12">
+                        <div class="alert alert-warning" role="alert">
+                            No users found.
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock body %}

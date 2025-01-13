@@ -1,0 +1,94 @@
+{% extends "base_layout.html" %}
+
+{% block title %}Home Page{% endblock title %}
+
+{% block head_part %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+<style>
+  .card img {
+    width: 100%;
+    height: 225px;
+    object-fit: contain;
+  }
+  .card-text {
+    text-align: center;
+  }
+  .card {
+    height: 100%;
+  }
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .carousel{
+    height: 200px;
+  }
+  
+</style>
+{% endblock head_part %}
+
+{% block body %}
+<!-- Search Form Section -->
+<section class="py-4 bg-light">
+  <div class="container">
+    <form class="d-flex mx-auto" action="" method="POST" style="max-width: 600px; width: 100%;">
+      <input type="text" class="form-control form-control-dark me-0" name="search" placeholder="Search..." value="{{old_value.search}}" aria-label="Search">
+      <button type="submit" class="btn btn-dark ms-0">Search</button> <!-- Changed to button for better styling -->
+    </form>
+  </div>
+</section>
+<main>
+  <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="{{ url_for('static', filename='images/slide_image1.png') }}" class="d-block w-100" alt="Slide 1">
+      </div>
+      <div class="carousel-item">
+        <img src="{{ url_for('static', filename='images/slide_image2.png') }}" class="d-block w-100" alt="Slide 2">
+      </div>
+      <div class="carousel-item">
+        <img src="{{ url_for('static', filename='images/slide_image3.png') }}" class="d-block w-100" alt="Slide 3">
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+
+  <section>
+    <div class="album py-5 bg-light">
+      <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+          {% for data in product_list %}
+          <div class="col">
+            <a href="{{ url_for('product_details', product_id=data.id) }}" class="text-decoration-none">
+              <div class="card shadow-sm">
+                <img src="{{ url_for('static', filename='uploads/products/' + data.product_image) }}" class="card-img-top" alt="{{ data.name }}">
+                <div class="card-body">
+                  <p class="card-text">{{ data.name }}</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span>₹{{ data.price }}</span>
+                    <small class="text-muted">9 days</small>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock body %}

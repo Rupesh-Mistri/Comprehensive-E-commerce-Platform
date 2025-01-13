@@ -1,0 +1,195 @@
+{% extends "base_layout.html" %}
+
+{% block title %}Checkout{% endblock title %}
+
+{% block head_part %}
+<style>
+  .checkout-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+
+  .cart-table, .billing-form {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .cart-table th, .cart-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .cart-table th {
+    background-color: #f1f1f1;
+  }
+
+  .cart-actions button {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .btn-danger {
+    background-color: #dc3545;
+    color: white;
+  }
+
+  .btn-primary:hover, .btn-danger:hover {
+    opacity: 0.9;
+  }
+
+  .total-price {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+
+  .billing-form input, .billing-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+
+  .billing-form button {
+    padding: 10px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .billing-form button:hover {
+    background-color: #218838;
+  }
+</style>
+{% endblock head_part %}
+
+{% block body %}
+<main>
+  <div class="checkout-container">
+    {% if is_logged_in %}
+    <h2>Checkout</h2>
+    <div>
+      <h3>Your Order Details</h3>
+      <table class="cart-table">
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set total_sum = 0 %}
+          {% for item in cart_list %}
+          <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>${{ item.product.price }}</td>
+            <td>${{ item.product.price * item.quantity }}</td>
+          </tr>
+          {% set total_sum = total_sum + (item.product.price * item.quantity) %}
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="total-price">
+        Total: ₹{{ total_bill }}
+      </div>
+
+      <h3>Billing Information</h3>
+      <form class="billing-form" method="post" id="billing-form">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" required>
+        <input type="hidden" id="total_pay_amount" name="total_pay_amount" value={{total_bill}} required>
+        <label for="address">Shipping Address</label>
+        <textarea id="address" name="address" required></textarea>
+
+        <label for="payment_method">Payment Method</label>
+        <select id="payment_method" name="payment_method" required>
+          <option value="credit-card">Credit Card</option>
+          <option value="paypal">PayPal</option>
+          <option value="bank-transfer">Bank Transfer</option>
+        </select>
+
+        <input type="text" name="payment_method_dtl" >
+
+        <button type="submit">Place Order</button>
+      </form>
+    </div>
+
+    <script>
+      // Function to handle form submission
+      document.getElementById('billing-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // Gather billing info
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const address = document.getElementById('address').value;
+        const paymentMethod = document.getElementById('payment_method').value;
+
+        // Simulate order placement process
+        const cartItems = {% raw %}{{ cart_list | tojson }}{% endraw %};  // Get the cart data in JSON format
+        const totalPrice = {{ total_sum }};
+
+        const orderDetails = {
+          name: name,
+          email: email,
+          address: address,
+          payment_method: paymentMethod,
+          items: cartItems,
+          total_price: totalPrice
+        };
+
+        // Simulate order submission (you can replace this with an actual backend API call)
+        try {
+          const response = await fetch('/submit_order', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderDetails),
+          });
+
+          const result = await response.json();
+          if (result.success) {
+            alert('Order placed successfully! Your order ID is: ' + result.order_id);
+            // Optionally, clear the cart here
+            // localStorage.removeItem('cart');
+            // window.location.href = '/order-confirmation';  // Redirect to order confirmation page
+          } else {
+            alert('Error placing order: ' + result.error);
+          }
+        } catch (error) {
+          console.error('Error during order submission:', error);
+          alert('An error occurred while placing your order.');
+        }
+      });
+    </script>
+
+    {% else %}
+    <p>Please <a href="/login">log in</a> to proceed with the checkout.</p>
+    {% endif %}
+  </div>
+</main>
+{% endblock body %}

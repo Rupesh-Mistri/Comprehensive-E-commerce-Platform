@@ -1,0 +1,144 @@
+
+{% extends "admin_templates/admin_base_layout.html" %}    
+{% block head_part %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{% endblock head_part %}
+{% block body %}
+    
+
+        <div class="main p-3">
+            <div class="text-center">
+                <h1>
+                    Analytics
+                </h1>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="{{ url_for('static', filename='images/analytics/plot_popular_products.png') }}" 
+                        alt="img" 
+                        class="product-image" 
+                        style="object-fit: cover; width: 100%; height: auto;">
+                        
+                </div>
+                <div class="col-md-6">
+                    <img src="{{ url_for('static', filename='images/analytics/plot_sales_trend.png') }}" 
+                        alt="Sales Trend Chart" 
+                        class="product-image" 
+                        style="object-fit: cover; width: 100%; height: auto;">               
+                </div>
+            </div>
+            <hr>
+
+            <div class="row">
+
+                <div class="col-md-6">
+                    <h2 class="text-center text-secondary mb-4">Product Analytics</h2>
+                    <canvas id="myChart" width="400" height="200"></canvas>
+                </div>
+
+                <div class="col-md-6">
+                    <h2 class="text-center text-secondary">Sales Of Product (₹)</h2>
+                    <canvas id="salesChart" width="800" height="400"></canvas>
+                </div>
+           
+              
+            </div>
+            <hr>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="{{ url_for('static', filename='images/analytics/plot_user_demographics_histogram.png') }}" 
+                    alt="img" 
+                    class="product-image" style="object-fit: cover; width: 100%; height: auto;">
+
+                </div>
+                <div class="col-md-6">
+                    <img src="{{ url_for('static', filename='images/analytics/plot_user_demographics_pie.png') }}" 
+                    alt="img" class="product-image" style="object-fit: cover; width: 100%; height: auto;">
+
+                </div>
+            </div>
+            <hr>
+
+
+
+
+           
+        </div> <!--class="main p-3"-->
+
+   <script>
+    const plot_products_qty = {{ plot_products_qty | tojson }};
+    const ctxExample = document.getElementById('myChart').getContext('2d');
+    new Chart(ctxExample, {
+        type: 'bar',  // We can change this to 'line', 'pie', etc.
+        data: {
+            labels: plot_products_qty.labels,
+            datasets: [{
+                label: '',  // This label will be shown in the legend
+                data: plot_products_qty.data,
+                borderWidth: 1,
+                backgroundColor: ['#FF5733', '#33B5FF', '#FFEB33', '#33FF57', '#9B33FF', '#FF5733'],
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false  // Hides the legend
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Product Name'  // Set the x-axis label here
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Quantity'  // Set the y-axis label here
+                    },
+                    ticks: {
+                        stepSize: 1,  // Adjust the step size if needed
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+        <script>
+            // Get the chart data passed from Flask
+            const chartData = {{ sale_analytics_data | tojson }};
+            
+            // Initialize the chart
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            const salesChart = new Chart(ctx, {
+                type: 'line',  // We can change this to 'bar', 'pie', etc.
+                data: {
+                    labels: chartData.labels,  // Labels for the x-axis (months)
+                    datasets: [{
+                        label: 'Total Sales',
+                        data: chartData.data,  // Sales data
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        fill: false,
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        </script>
+        
+     
+        
+
+    {% endblock body %}

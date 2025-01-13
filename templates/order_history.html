@@ -1,0 +1,106 @@
+{% extends "base_layout.html" %}
+
+{% block title %}Bill Details{% endblock title %}
+
+{% block head_part %}
+  <style>
+    .bill-header {
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 5px;
+      margin-bottom: 30px;
+    }
+    .order-item {
+      padding: 15px;
+      border-bottom: 1px solid #e3e3e3;
+    }
+    .total-section {
+      font-weight: bold;
+      font-size: 1.25rem;
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    .btn-back {
+      margin-top: 20px;
+    }
+  </style>
+{% endblock head_part %}
+
+{% block body %}
+  <main class="container mt-5">
+    <div class="bill-header">
+      <h2 class="text-center">Order History</h2>
+    </div>
+
+    <div class="order-items-list">
+      <h4>Ordered Products</h4>
+      <div class="list-group">
+        
+          <div class="list-group-item order-item">
+            <div class="row">
+              <div class="col-md-3">
+                <h5>Trasaction No</h5>
+                
+              </div>
+              <div class="col-md-3 text-center">
+                <p>Bill No.</p>
+               </div>
+              <div class="col-md-3 text-center">
+               Date
+              </div>
+              <div class="col-md-3 text-center">
+               
+               View Details
+              </div>
+            </div>
+          </div>
+      <div class="list-group">
+        {% for bill_dtl in order_history_list %}
+          <div class="list-group-item order-item">
+            <div class="row">
+              <div class="col-md-3">
+                <h5>{{ bill_dtl.trasaction_no }}</h5>
+               
+              </div>
+              <div class="col-md-3">
+             
+                <p>{{ bill_dtl.bill_no }}</p>
+              </div>
+              <div class="col-md-3 text-center">
+                {% if bill_dtl.created_at %}
+                  {{ bill_dtl.created_at.strftime('%Y-%m-%d %H:%M:%S') }}
+                {% else %}
+                  N/A
+                {% endif %}
+              </div>
+              <div class="col-md-3 text-center">
+               
+                <a href="/bill_detail/{{ bill_dtl.id }}" class="btn btn-info btn-sm">View Details</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    
+    <!-- 
+    <div class="total-section">
+      <div class="row">
+        <div class="col-md-9">
+          <h4>Total</h4>
+        </div>
+        <div class="col-md-3 text-right">
+          <h4>₹{{ total_bill }}</h4>
+        </div>
+      </div>
+    </div> 
+    -->
+
+    <div class="text-center">
+      <a href="/" class="btn btn-secondary btn-back">Back to Home</a>
+    </div>
+  </main>
+{% endblock body %}

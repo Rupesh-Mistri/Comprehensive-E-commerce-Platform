@@ -1,0 +1,72 @@
+/* CSS common to all type of screen */
+
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) {
+
+    body {
+        background-color: red;
+    }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    body {
+        background-color: coral;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    body {
+        background-color: green;
+    }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    body {
+        background-color: yellow;
+    }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) and (max-width: 1599.98px) {
+    body {
+        background-color: orangered;
+    }
+}
+
+/* Ultra-wide devices (1600px and up) */
+@media (min-width: 1600px) {
+    body {
+        background-color: orange;
+    }
+}
+
+
+/* Ensure that the footer always stays at the bottom */
+html,
+body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex-grow: 1;
+    /* This makes the content area take up remaining space */
+}
+
+footer {
+    /* Add any specific styling you need for the footer */
+    background-color: #f8f9fa;
+    padding: 10px 0;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}

@@ -1,0 +1,106 @@
+{% extends "base_layout.html" %}
+
+{% block title %}Sign Up{% endblock title %}
+
+{% block head_part %}
+<style>
+  .form-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #343a40;
+  }
+
+  .form-container .btn-primary {
+    width: 100%;
+  }
+</style>
+{% endblock head_part %}
+
+{% block body %}
+<main class="bg-light py-5">
+  <div class="container">
+    <div class="form-container">
+      <h2>Login</h2>
+      <form action="{{ url_for('user_login') }}" id="login-form" method="POST">
+        <!-- Email -->
+        <div class="form-group mb-3">
+          <label for="email" class="form-label">Email Address</label>
+          <input 
+            type="email" 
+            class="form-control" 
+            id="email" 
+            name="email" 
+            placeholder="Enter your email" 
+            required
+          >
+        </div>
+
+        <!-- Password -->
+        <div class="form-group mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input 
+            type="password" 
+            class="form-control" 
+            id="password" 
+            name="password" 
+            placeholder="Enter your password" 
+            required
+          >
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary mt-2">Login</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+<script>
+  document.getElementById('login-form').addEventListener('submit', async function (e) {
+    e.preventDefault(); // Prevent default form submission
+
+    // Gather login form data
+    const formData = new FormData(this);
+    const email = formData.get('email');
+    const password = formData.get('password');
+
+    // Get cart data from localStorage
+    const cartData = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Send login data and cart data to the server
+    const response = await fetch('{{ url_for("user_login") }}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        cart: cartData,
+      }),
+    });
+
+    // Handle response
+    const result = await response.json();
+    if (result.success) {
+      // Clear localStorage if login is successful
+      localStorage.removeItem('cart');
+      window.location.href = '{{ url_for("index") }}';
+    } else {
+      alert(result.error); 
+    }
+  });
+</script>
+{% endblock body %}

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="{{ url_for('static', filename='css/bootstrap5.3.min.css') }}" rel="stylesheet" > 
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_style.css') }}" >
+    <style>
+        @media screen and (max-width: 400px) {
+          #sidebar {
+            display: none;
+          }
+        }
+      </style>
+    {% block head_part %}
+    
+    {% endblock head_part %}
+    <title>{% block title %}{{request.endpoint.replace('_', ' ') | upper}}{% endblock title %}</title>
+    <style>
+        #header_main {
+            position:relative;
+            height:100px;
+            width:100px;
+            border:1px solid #999;
+        }
+        #div1, #div2 {
+            position:absolute;
+        }
+        #div1 {
+            top:0
+        }
+        #div2 {
+            bottom:0;
+        }
+
+        .header-profile{
+            height:40px;
+        }
+    </style>
+    <style>
+        /* Styling the button to only display the icon */
+        #id_toggle_in_mobile {
+            background: none; /* Remove background color */
+            border: none; /* Remove border */
+            padding: 0; /* Remove padding */
+            cursor: pointer; /* Show pointer cursor on hover */
+            color:#FFFFFF
+        }
+
+        #id_toggle_in_mobile i {
+            font-size: 24px; /* Adjust icon size */
+            color:rgb(187, 189, 192); /* Set arrow color */
+            
+        }
+
+        #id_toggle_in_mobile:hover i {
+            color: #FFFFFF; /* Change color on hover */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+    <aside id="sidebar">
+        <div class="d-flex">
+            <button class="toggle-btn" type="button">
+                <i class="bi bi-list"></i>
+            </button>
+            <div class="sidebar-logo">
+                <a href="#">Admin Dashboard</a>
+            </div>
+        </div>
+        <ul class="sidebar-nav">
+            <li class="sidebar-item">
+                <a href="/dashboard" class="sidebar-link" data-bs-toggle="tooltip" title="Dashboard">
+                    <i class="bi bi-bar-chart"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="/user_list" class="sidebar-link" data-bs-toggle="tooltip" title="Manage Users">
+                    <i class="bi bi-person"></i>
+                    <span>Manage Users</span>
+                </a>
+            </li>
+
+
+            <li class="sidebar-item">
+                <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                    data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
+                    <i class="bi bi-card-checklist"></i>
+                    <span>Master</span>
+                </a>
+                <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                    <li class="sidebar-item">
+                        <a href="/category_master" class="sidebar-link">Category Master</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="/product_master" class="sidebar-link">Product Master</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="sidebar-item">
+                <a href="/order_transaction" class="sidebar-link"  data-bs-toggle="tooltip" title="Orders Transaction">
+                    <i class="bi bi-blockquote-right"></i>
+                    <span>Order Transaction</span>
+                </a>
+            </li>
+           {# <li class="sidebar-item">
+                <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                    data-bs-target="#multi" aria-expanded="false" aria-controls="multi">
+                    <i class="lni lni-layout"></i>
+                    <span>Multi Level</span>
+                </a>
+                <ul id="multi" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link collapsed" data-bs-toggle="collapse"
+                            data-bs-target="#multi-two" aria-expanded="false" aria-controls="multi-two">
+                            Two Links
+                        </a>
+                        <ul id="multi-two" class="sidebar-dropdown list-unstyled collapse">
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link">Link 1</a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link">Link 2</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li class="sidebar-item">
+                <a href="#" class="sidebar-link">
+                    <i class="lni lni-popup"></i>
+                    <span>Notification</span>
+                </a>
+            </li> #}
+            <li class="sidebar-item">
+                <a href="/user_logout" class="sidebar-link" data-bs-toggle="tooltip" title="Logout">
+                    <i class="bi bi-box-arrow-left"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+        {#<div class="sidebar-footer">
+            <a href="/user_logout" class="sidebar-link" data-bs-toggle="tooltip" title="Logout">
+                <i class="bi bi-box-arrow-left"></i>
+                <span>Logout</span>
+            </a>
+        </div>#}
+    </aside>
+    <div class="main header_main">
+        <div class="header-profile" style="width:100%">
+    
+            <div class="header-profile d-flex justify-content-between align-items-center" style="background-color: #0e2238;">
+                <!-- Left Section: Toggle Button -->
+                <div class="left-section d-flex align-items-center">
+                    <button type="button" id="id_toggle_in_mobile"  style="background-color: #0e2238;color;white" onclick="toggleContent()">
+                        <i class="bi bi-arrow-left-short "></i>
+                    </button>
+                    {#<div class="text-center">
+                        <h1 style="color: white;">Dashboard</h1>
+                    </div>#}
+                </div>
+    
+                <!-- Right Section: Profile, Username, and Logout -->
+                <div class="user-profile d-flex align-items-center">
+                    <!-- Username -->
+                    <div class="username mr-3">
+                        <span style="color:white">{{session['user_name']}}</span> <!-- Replace with dynamic username if needed -->
+                    </div>
+                    
+                    <!-- Logout Button -->
+                    <div class="logout m-3">
+                        <a href="/user_logout" class="btn btn-danger">Logout</a>
+                    </div>
+               
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function toggleContent() {
+         
+
+            const buttonIcon = document.querySelector("#id_toggle_in_mobile i");
+
+            // Toggle between left and right arrow
+            if (buttonIcon.classList.contains("bi-arrow-left-short")) {
+                buttonIcon.classList.remove("bi-arrow-left-short");
+                buttonIcon.classList.add("bi-arrow-right-short");
+            } else {
+                buttonIcon.classList.remove("bi-arrow-right-short");
+                buttonIcon.classList.add("bi-arrow-left-short");
+            }
+
+            // Optionally toggle some content visibility
+            const content = document.getElementById("sidebar"); // Replace with your actual target element
+            if (content) {
+                content.style.display = content.style.display === "none" ? "block" : "none";
+            }
+        }
+    </script>
+    
+    <div class="main">
+        <!---->
+        {% with messages = get_flashed_messages(with_categories=True) %}
+  {% if messages %}
+    <div class="container mt-3">
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+<!---->
+
+        {% block body %}{% endblock body %}
+    </div>
+    </div>
+    
+    {% include "admin_templates/admin_footer.html"%}
+    
+</body>
+</html>
