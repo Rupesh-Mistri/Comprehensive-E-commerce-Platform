@@ -3,7 +3,7 @@ from markupsafe import escape
 from models import *
 from database import session as db_session  
 import datetime
-from werkzeug.security import check_password_hash
+import hashlib
 from werkzeug.utils import secure_filename
 
 import os
@@ -49,7 +49,8 @@ def user_login():
         email = data.get('email')
         password = data.get('password')
         cart = data.get('cart', [])
-      
+        pas = hashlib.md5(password.encode())
+        password = pas.hexdigest()
         # Check if the user exists in the database
         user = db_session.query(User).filter_by(email=email, password=password).first()
 
@@ -130,7 +131,8 @@ def user_signup():
         dob_date = datetime.datetime.strptime(dob, '%Y-%m-%d')  # Convert string to datetime object
         today = datetime.datetime.today()
         age = today.year - dob_date.year - ((today.month, today.day) < (dob_date.month, dob_date.day))
-
+        pas = hashlib.md5(password.encode())
+        password = pas.hexdigest()
 
         new_user = User(
             name=name,
