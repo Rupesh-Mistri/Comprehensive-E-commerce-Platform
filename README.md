@@ -25,7 +25,7 @@ This platform simplifies online shopping and management, offering a complete sol
 
 
 # Project Structure 
-
+```
 │   app.py
 │   database.py
 │   models.py
@@ -82,7 +82,7 @@ This platform simplifies online shopping and management, offering a complete sol
             product_master.html
             user_alter.html
             user_list.html
-
+```
 # Getting Started
 ## Prerequisites
 To run project locally you need following
