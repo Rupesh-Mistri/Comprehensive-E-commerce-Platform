@@ -113,7 +113,7 @@ Installation
 
 5. Set Up the App
 - Admin Setup: On the first run, you'll need to add categories and products to the master data.
-- Click on Admin Login. Since no records exist for the super admin initially, you will be prompted to sign up. After signing up, log in as the admin.
+- Click on Admin Login. Since no records exist for the super_admin role initially, you will be prompted to sign up. After signing up, log in as the admin.
 - Once logged in, you can add categories and products to the product master.
 - After adding products, they will appear on the homepage. Customers will then be able to:
     -   Browse products
